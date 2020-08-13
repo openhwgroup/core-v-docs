@@ -12,11 +12,12 @@ Instantiation Template
 .. code-block:: verilog
 
   cv32e40p_core #(
-      .FPU                      ( 0 ),
-      .NUM_MHPMCOUNTERS         ( 1 ),
-      .PULP_CLUSTER             ( 0 ),
-      .PULP_XPULP               ( 1 ),
-      .PULP_ZFINX               ( 0 )
+      .FPU                      ( 0  ),
+      .NUM_MHPMCOUNTERS         ( 1  ),
+      .WIDTH_MHPMCOUNTERS       ( 64 ),
+      .PULP_CLUSTER             ( 0  ),
+      .PULP_XPULP               ( 1  ),
+      .PULP_ZFINX               ( 0  )
   ) u_core (
       // Clock and reset
       .clk_i                    (),
@@ -82,6 +83,8 @@ Parameters
 +------------------------------+-------------+------------+-----------------------------------------------------------------+
 | ``NUM_MHPMCOUNTERS``         | int (0..29) | 1          | Number of MHPMCOUNTER performance counters, see                 |
 |                              |             |            | :ref:`performance-counters`                                     |
++------------------------------+-------------+------------+-----------------------------------------------------------------+
+| ``WIDTH_MHPMCOUNTERS``       | int (0..64) | 64         | Bit width of MHPMCOUNTER performance counters                   |
 +------------------------------+-------------+------------+-----------------------------------------------------------------+
 | ``PULP_CLUSTER``             | bit         | 0          | Enable PULP Cluster support, see :ref:`pulp_cluster`            |
 +------------------------------+-------------+------------+-----------------------------------------------------------------+

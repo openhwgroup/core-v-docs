@@ -7,11 +7,6 @@ CV32E40P implements performance counters according to the RISC-V Privileged Spec
 The performance counters are placed inside the Control and Status Registers (CSRs) and can be accessed with the ``CSRRW(I)`` and ``CSRRS/C(I)`` instructions.
 
 CV32E40P implements the clock cycle counter ``mcycle(h)``, the retired instruction counter ``minstret(h)``, as well as the parameterizable number of event counters ``mhpmcounter3(h)`` - ``mhpmcounter31(h)`` and the corresponding event selector CSRs ``mhpmevent3`` - ``mhpmevent31``, and the ``mcountinhibit`` CSR to individually enable/disable the counters.
-``mcycle(h)`` and ``minstret(h)`` are always available.
-
-All counters are 64 bit wide.
-
-The number of event counters is determined by the parameter ``NUM_MHPMCOUNTERS`` with a range from 0 to 29 (default value of 1).
 
 Unimplemented counters always read 0.
 
@@ -79,13 +74,27 @@ Parametrization at synthesis time
 ---------------------------------
 
 The ``mcycle(h)`` and ``minstret(h)`` counters are always available and 64 bit wide.
+The optional performance counters ``mhpmcounter3(h)`` - ``mhpmcounter31(h)`` are parametrizable in width.
+All counters are 64 bit wide.
 
-The number of available event counters ``mhpmcounterX(h)`` can be controlled via the ``NUM_MHPMCOUNTERS`` parameter.
-By default ``NUM_MHPCOUNTERS`` set to 1.
+The number of event counters is determined by the parameter ``NUM_MHPMCOUNTERS`` with a range from 0 to 29 (default value of 1).
+Their width is determined by the parameter ``WIDTH_MHPMCOUNTERS``.
 
-An increment of 1 to the NUM_MHPCOUNTERS results in the addition of the following:
+An increment of 1 to the ``NUM_MHPCOUNTERS`` results in the addition of the following:
 
-   - 64 flops for ``mhpmcounterX``
-   - 15 flops for `mhpmeventX`
-   -  1 flop  for `mcountinhibit[X]`
+[//]: # (should it not be 16 flops for ``mhpmeventX`` ? )
+   - ``WIDTH_MHPMCOUNTERS`` flops for ``mhpmcounterX``
+   - 15 flops for ``mhpmeventX``
+   -  1 flop  for ``mcountinhibit[X]``
    - Adder and event enablement logic
+
+FPGA Targets
+------------
+For FPGA targets the performance counters constitute a particularly large structure.
+For Xilinx FPGA devices featuring the DSP48E1 DSP slice or similar, counter logic can be absorbed into the DSP slice for widths up to 48 bits.
+For 32 bit counters only, the corresponding flip-flops can be incorporated into the DSP’s output pipeline register, additionally resulting in a reduction of the number of flip-flops.
+Implementing the maximum 29 event counters 32 bit wide using DSP slices results in a reduction of LUT utilization by 11% and FPGA utilization by 24% with respect to the corresponding non-DSP implementation.
+This comes at the expense of 1 DSP slice per counter.
+In order to infer DSP slices for performance counters, define the preprocessor variable ``TARGET_XILINX``.
+
+Next  Previous
